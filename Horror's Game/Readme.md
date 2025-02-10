@@ -3,7 +3,7 @@
 Horror's Game
 -
 맵을 이동하며 좀비들을 무찌르는 3인칭 슈팅게임입니다.</br>
-언리얼 엔진을 활용하여 만든 첫 번째 게임 프로토타입이라 상세 코드에 대한 내용은 아래 링크를 통해 확인 부탁드립니다.</br>
+상세 코드에 대한 내용은 아래 링크를 통해 확인 부탁드립니다.</br>
 </br>
 [>>  소스 코드 보러 가기](https://github.com/tbvjchvkfl/Personal_Project/tree/master/UE5_HorrorGame)
 
