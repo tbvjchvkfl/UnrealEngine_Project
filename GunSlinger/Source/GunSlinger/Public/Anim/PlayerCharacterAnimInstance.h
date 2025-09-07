@@ -10,6 +10,15 @@
 struct FPoseSearchQueryTrajectory;
 class APlayerCharacter;
 class APlayerCharacterController;
+class UCharacterMovementComponent;
+
+UENUM()
+enum class EPlayerState : uint8
+{
+	IDLE UMETA(Displayname = "Idle"),
+	WALK UMETA(Displayname = "Walk"),
+	RUN UMETA(Displayname = "Run"),
+};
 
 UCLASS()
 class GUNSLINGER_API UPlayerCharacterAnimInstance : public UAnimInstance
@@ -25,7 +34,7 @@ public:
 	//==============================================================
 	//=                          Function                          =
 	//==============================================================
-
+	EPlayerState GetCurrentState() const;
 private:
 	//==============================================================
 	//=                          Variable                          =
@@ -36,11 +45,26 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | EssentialData", meta = (AllowPrivateAccess = "true"))
 	APlayerCharacterController* OwnerController;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | EssentialData", meta = (AllowPrivateAccess = "true"))
+	UCharacterMovementComponent* OwnerCharacterMovement;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | State", meta = (AllowPrivateAccess = "true"))
+	EPlayerState CurrentState;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | State", meta = (AllowPrivateAccess = "true"))
 	bool bIsAim;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | State", meta = (AllowPrivateAccess = "true"))
-	float Acceleration;
+	bool bIsInAir;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | State", meta = (AllowPrivateAccess = "true"))
+	bool bIsAcceleration;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | State", meta = (AllowPrivateAccess = "true"))
+	float Speed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | State", meta = (AllowPrivateAccess = "true"))
+	FVector CurrentVelocity;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | Tajectory", meta = (AllowPrivateAccess = "true"))
 	float DesiredYawLastUpdate;
