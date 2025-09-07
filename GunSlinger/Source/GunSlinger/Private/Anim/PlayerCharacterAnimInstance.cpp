@@ -7,6 +7,7 @@
 #include "Controller/PlayerCharacterController.h"
 
 // Engine
+#include "GameFramework/CharacterMovementComponent.h"
 #include "CharacterTrajectoryComponent.h"
 #include "PoseSearch/PoseSearchTrajectoryLibrary.h"
 #include "PoseSearch/PoseSearchTrajectoryTypes.h"
@@ -14,6 +15,7 @@
 void UPlayerCharacterAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
+	CurrentState = EPlayerState::IDLE;
 }
 
 void UPlayerCharacterAnimInstance::NativeBeginPlay()
@@ -21,6 +23,7 @@ void UPlayerCharacterAnimInstance::NativeBeginPlay()
 	Super::NativeBeginPlay();
 	OwnerCharacter = Cast<APlayerCharacter>(TryGetPawnOwner());
 	OwnerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+	OwnerCharacterMovement = OwnerCharacter->GetCharacterMovement();
 }
 
 void UPlayerCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -36,10 +39,17 @@ void UPlayerCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		OwnerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	}
-	if (OwnerCharacter && OwnerController)
+	if (!OwnerCharacterMovement && OwnerCharacter)
+	{
+		OwnerCharacterMovement = OwnerCharacter->GetCharacterMovement();
+	}
+	if (OwnerCharacter && OwnerController && OwnerCharacterMovement)
 	{
 		bIsAim = OwnerController->bIsAim;
-		Acceleration = OwnerCharacter->GetVelocity().Size();
+		bIsInAir = OwnerCharacter->GetCharacterMovement()->IsFalling();
+		bIsAcceleration = (OwnerCharacterMovement->GetCurrentAcceleration().Size() / OwnerCharacterMovement->GetMaxAcceleration()) > 0.0f;
+		CurrentVelocity = OwnerCharacterMovement->Velocity;
+		Speed = CurrentVelocity.Size2D();
 	}
 }
 
@@ -62,4 +72,11 @@ void UPlayerCharacterAnimInstance::NativePostEvaluateAnimation()
 	Super::NativePostEvaluateAnimation();
 
 	// Final Result, 본 위치 보정 및 최종 확인 
+}
+
+EPlayerState UPlayerCharacterAnimInstance::GetCurrentState() const
+{
+	EPlayerState ReturnState = EPlayerState::IDLE;
+
+	return ReturnState;
 }
