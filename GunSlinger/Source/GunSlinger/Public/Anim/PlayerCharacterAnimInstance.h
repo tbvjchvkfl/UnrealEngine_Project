@@ -55,6 +55,9 @@ private:
 	bool bIsAim;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | State", meta = (AllowPrivateAccess = "true"))
+	bool bIsSwitchMovementState;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | State", meta = (AllowPrivateAccess = "true"))
 	bool bIsInAir;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | State", meta = (AllowPrivateAccess = "true"))

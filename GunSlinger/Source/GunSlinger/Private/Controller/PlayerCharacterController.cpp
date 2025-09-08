@@ -45,9 +45,14 @@ void APlayerCharacterController::SetupInputComponent()
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterController::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacterController::Look);
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &APlayerCharacterController::StartAim);
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &APlayerCharacterController::EndAim);
+
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &APlayerCharacterController::Aim);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &APlayerCharacterController::Aim);
+
 		EnhancedInputComponent->BindAction(BasicAttackAction, ETriggerEvent::Triggered, this, &APlayerCharacterController::BasicAttack);
+
+		EnhancedInputComponent->BindAction(SwitchMovementAction, ETriggerEvent::Started, this, &APlayerCharacterController::SwitchMovement);
+		EnhancedInputComponent->BindAction(SwitchMovementAction, ETriggerEvent::Completed, this, &APlayerCharacterController::SwitchMovement);
 	}
 }
 
@@ -70,13 +75,22 @@ void APlayerCharacterController::Look(const FInputActionInstance& Action)
 	AddPitchInput(LookDirection.Y * -LookingRotationValue * GetWorld()->GetDeltaSeconds());
 }
 
-void APlayerCharacterController::StartAim(const FInputActionInstance& Action)
+void APlayerCharacterController::Aim(const FInputActionInstance& Action)
 {
 	if (OwnerCharacter)
 	{
-		bIsAim = true;
-		OwnerCharacter->GetCharacterMovement()->bUseControllerDesiredRotation = true;
-		OwnerCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
+		if (bIsAim)
+		{
+			bIsAim = false;
+			OwnerCharacter->GetCharacterMovement()->bUseControllerDesiredRotation = false;
+			OwnerCharacter->GetCharacterMovement()->bOrientRotationToMovement = true;
+		}
+		else
+		{
+			bIsAim = true;
+			OwnerCharacter->GetCharacterMovement()->bUseControllerDesiredRotation = true;
+			OwnerCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
+		}
 		GetWorld()->GetTimerManager().ClearTimer(AimTimerHandle);
 		GetWorld()->GetTimerManager().SetTimer(AimTimerHandle, this, &APlayerCharacterController::UpdateAimState, TimerInterupt, true);
 	}
@@ -118,4 +132,17 @@ void APlayerCharacterController::EndAim(const FInputActionInstance& Action)
 void APlayerCharacterController::BasicAttack()
 {
 
+}
+
+void APlayerCharacterController::SwitchMovement(const FInputActionInstance& Action)
+{
+	// 이동 속도 변경해줘야함
+	if (bIsSwitchMovementState)
+	{
+		bIsSwitchMovementState = false;
+	}
+	else
+	{
+		bIsSwitchMovementState = true;
+	}
 }

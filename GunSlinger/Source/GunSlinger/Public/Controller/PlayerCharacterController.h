@@ -7,7 +7,7 @@
 #include "PlayerCharacterController.generated.h"
 
 struct FInputActionInstance;
-struct FinputActionValue;
+struct FInputActionValue;
 class UInputMappingContext;
 class UInputAction;
 class APlayerCharacter;
@@ -23,6 +23,9 @@ public:
 	//==============================================================
 	UPROPERTY(VisibleAnywhere, Category = "Property | State")
 	bool bIsAim = false;
+
+	UPROPERTY(VisibleAnywhere, Category = "Property | State")
+	bool bIsSwitchMovementState = false;
 
 	UPROPERTY(EditAnywhere, Category = "Property | Value")
 	float LookingRotationValue = 10.0f;
@@ -41,10 +44,10 @@ private:
 	//==============================================================
 	//=                          Variable                          =
 	//==============================================================
-	UPROPERTY(EditDefaultsOnly, Category = "Property | ETC", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, Category = "Property | Value", meta = (AllowPrivateAccess = "true"))
 	float ZoomFactor = 0.0f;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Property | ETC", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, Category = "Property | Value", meta = (AllowPrivateAccess = "true"))
 	float TimerInterupt = 0.01f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Property | Input", meta = (AllowPrivateAccess = "true"))
@@ -62,6 +65,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Property | Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* BasicAttackAction;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Property | Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* SwitchMovementAction;
+
 	//==============================================================
 	//=                          Function                          =
 	//==============================================================
@@ -71,8 +77,9 @@ private:
 
 	void Move(const FInputActionInstance& Action);
 	void Look(const FInputActionInstance& Action);
-	void StartAim(const FInputActionInstance& Action);
+	void Aim(const FInputActionInstance& Action);
 	void UpdateAimState();
 	void EndAim(const FInputActionInstance& Action);
 	void BasicAttack();
+	void SwitchMovement(const FInputActionInstance& Action);
 };

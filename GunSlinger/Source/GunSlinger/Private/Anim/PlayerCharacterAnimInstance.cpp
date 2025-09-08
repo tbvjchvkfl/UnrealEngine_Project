@@ -46,10 +46,14 @@ void UPlayerCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	if (OwnerCharacter && OwnerController && OwnerCharacterMovement)
 	{
 		bIsAim = OwnerController->bIsAim;
+		bIsSwitchMovementState = OwnerController->bIsSwitchMovementState;
 		bIsInAir = OwnerCharacter->GetCharacterMovement()->IsFalling();
-		bIsAcceleration = (OwnerCharacterMovement->GetCurrentAcceleration().Size() / OwnerCharacterMovement->GetMaxAcceleration()) > 0.0f;
+		bIsAcceleration = OwnerCharacterMovement->GetCurrentAcceleration().Size() > 0.0f;
+		//bIsAcceleration = (OwnerCharacterMovement->GetCurrentAcceleration().Size() / OwnerCharacterMovement->GetMaxAcceleration()) > 0.0f;
 		CurrentVelocity = OwnerCharacterMovement->Velocity;
 		Speed = CurrentVelocity.Size2D();
+
+		GetCurrentState();
 	}
 }
 
@@ -77,6 +81,16 @@ void UPlayerCharacterAnimInstance::NativePostEvaluateAnimation()
 EPlayerState UPlayerCharacterAnimInstance::GetCurrentState() const
 {
 	EPlayerState ReturnState = EPlayerState::IDLE;
-
+	if (bIsAcceleration)
+	{
+		if (bIsSwitchMovementState)
+		{
+			ReturnState = EPlayerState::RUN;
+		}
+		else
+		{
+			ReturnState = EPlayerState::WALK;
+		}
+	}
 	return ReturnState;
 }
