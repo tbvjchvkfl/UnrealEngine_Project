@@ -53,7 +53,7 @@ void UPlayerCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		CurrentVelocity = OwnerCharacterMovement->Velocity;
 		Speed = CurrentVelocity.Size2D();
 
-		GetCurrentState();
+		SetCurrentState();
 	}
 }
 
@@ -78,7 +78,7 @@ void UPlayerCharacterAnimInstance::NativePostEvaluateAnimation()
 	// Final Result, 본 위치 보정 및 최종 확인 
 }
 
-EPlayerState UPlayerCharacterAnimInstance::GetCurrentState() const
+void UPlayerCharacterAnimInstance::SetCurrentState()
 {
 	EPlayerState ReturnState = EPlayerState::IDLE;
 	if (bIsAcceleration)
@@ -92,5 +92,5 @@ EPlayerState UPlayerCharacterAnimInstance::GetCurrentState() const
 			ReturnState = EPlayerState::WALK;
 		}
 	}
-	return ReturnState;
+	CurrentState = ReturnState;
 }
