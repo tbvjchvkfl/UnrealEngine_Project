@@ -34,7 +34,8 @@ public:
 	//==============================================================
 	//=                          Function                          =
 	//==============================================================
-	EPlayerState GetCurrentState() const;
+	EPlayerState GetCurrentState() const { return CurrentState; }
+
 private:
 	//==============================================================
 	//=                          Variable                          =
@@ -82,4 +83,6 @@ private:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
 	virtual void NativePostEvaluateAnimation() override;
+
+	void SetCurrentState();
 };
