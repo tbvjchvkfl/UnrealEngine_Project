@@ -5,9 +5,10 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
 #include "PoseSearch/PoseSearchTrajectoryTypes.h"
+#include "BoneControllers/AnimNode_FootPlacement.h"
 #include "PlayerCharacterAnimInstance.generated.h"
 
-struct FPoseSearchQueryTrajectory;
+//struct FPoseSearchQueryTrajectory;
 class APlayerCharacter;
 class APlayerCharacterController;
 class UCharacterMovementComponent;
@@ -34,8 +35,9 @@ public:
 	//==============================================================
 	//=                          Function                          =
 	//==============================================================
-	EPlayerState GetCurrentState() const { return CurrentState; }
+	UPlayerCharacterAnimInstance();
 
+	EPlayerState GetCurrentState() const { return CurrentState; }
 private:
 	//==============================================================
 	//=                          Variable                          =
@@ -84,6 +86,19 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | Tajectory", meta = (AllowPrivateAccess = "true"))
 	FPoseSearchQueryTrajectory CurrentTrajectory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Property | Foot Placement", meta = (AllowPrivateAccess = "true"))
+	FFootPlacementPlantSettings PlantSettingsMoving;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Property | Foot Placement", meta = (AllowPrivateAccess = "true"))
+	FFootPlacementPlantSettings PlantSettingsStop;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | Foot Placement", meta = (AllowPrivateAccess = "true"))
+	FFootPlacementInterpolationSettings InterpolationSettingsMoving;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | Foot Placement", meta = (AllowPrivateAccess = "true"))
+	FFootPlacementInterpolationSettings InterpolationSettingsStop;
+
 	//==============================================================
 	//=                          Function                          =
 	//==============================================================
@@ -92,6 +107,12 @@ private:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
 	virtual void NativePostEvaluateAnimation() override;
-
+	void InitializeFootPlacement();
 	void SetCurrentState();
+
+	UFUNCTION(BlueprintCallable, Category = "Function | Foot Placement")
+	FFootPlacementPlantSettings GetPlantSetting() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Function | Foot Placement")
+	FFootPlacementInterpolationSettings GetInterpolationSetting() const;
 };
