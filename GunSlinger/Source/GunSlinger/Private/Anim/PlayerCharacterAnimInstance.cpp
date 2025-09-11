@@ -9,14 +9,21 @@
 // Engine
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "CharacterTrajectoryComponent.h"
 #include "PoseSearch/PoseSearchTrajectoryLibrary.h"
 #include "PoseSearch/PoseSearchTrajectoryTypes.h"
+
+
+UPlayerCharacterAnimInstance::UPlayerCharacterAnimInstance()
+{
+	// Init Foot Placement Setting
+	InitializeFootPlacement();
+}
 
 void UPlayerCharacterAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 	CurrentState = EPlayerState::IDLE;
+	
 }
 
 void UPlayerCharacterAnimInstance::NativeBeginPlay()
@@ -84,6 +91,39 @@ void UPlayerCharacterAnimInstance::NativePostEvaluateAnimation()
 	Super::NativePostEvaluateAnimation();
 
 	// Final Result, 본 위치 보정 및 최종 확인 
+}
+
+void UPlayerCharacterAnimInstance::InitializeFootPlacement()
+{
+	PlantSettingsMoving.SpeedThreshold = 60.0f;
+	PlantSettingsMoving.UnplantRadius = 20.0f;
+	PlantSettingsMoving.UnplantAngle = 60.0f;
+	PlantSettingsMoving.ReplantRadiusRatio = 0.2f;
+
+	PlantSettingsStop.SpeedThreshold = 20.0f;
+	PlantSettingsStop.UnplantRadius = 40.0f;
+	PlantSettingsStop.UnplantAngle = 60.0f;
+	PlantSettingsStop.ReplantRadiusRatio = 0.75f;
+
+	InterpolationSettingsMoving.UnplantLinearStiffness = 10.0f;
+}
+
+FFootPlacementPlantSettings UPlayerCharacterAnimInstance::GetPlantSetting() const
+{
+	if(CurrentState == EPlayerState::IDLE)
+	{
+		return PlantSettingsStop;
+	}
+	return PlantSettingsMoving;
+}
+
+FFootPlacementInterpolationSettings UPlayerCharacterAnimInstance::GetInterpolationSetting() const
+{
+	if (CurrentState == EPlayerState::IDLE)
+	{
+		return InterpolationSettingsStop;
+	}
+	return InterpolationSettingsMoving;
 }
 
 void UPlayerCharacterAnimInstance::SetCurrentState()
