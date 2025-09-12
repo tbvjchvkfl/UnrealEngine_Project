@@ -11,7 +11,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MotionWarpingComponent.h"
-#include "CharacterTrajectoryComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -20,7 +19,7 @@ APlayerCharacter::APlayerCharacter()
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->bUsePawnControlRotation = true;
 	CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 70.0f));
-	CameraBoom->TargetArmLength = 200.0f;
+	CameraBoom->TargetArmLength = 200.0f; /*500.0f;*/
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Follow Camera"));
 	FollowCamera->SetupAttachment(CameraBoom);
@@ -28,7 +27,6 @@ APlayerCharacter::APlayerCharacter()
 	FollowCamera->SetRelativeLocation(FVector(0.0f, 50.0f, 0.0f));
 
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("Motion Warping Component"));
-	CharacterTrajectoryComponent = CreateDefaultSubobject<UCharacterTrajectoryComponent>(TEXT("Character Trajectory Component"));
 
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;

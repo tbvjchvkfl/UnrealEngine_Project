@@ -28,7 +28,7 @@ public:
 	bool bIsSwitchMovementState = false;
 
 	UPROPERTY(EditAnywhere, Category = "Property | Value")
-	float LookingRotationValue = 10.0f;
+	float LookingRotationValue = 30.0f;
 
 	UPROPERTY(VisibleAnywhere, Category = "Property | Essential Data")
 	APlayerCharacter* OwnerCharacter;

@@ -10,7 +10,6 @@ class UCameraComponent;
 class USpringArmComponent;
 class APlayerCharacterController;
 class UMotionWarpingComponent;
-class UCharacterTrajectoryComponent;
 
 UCLASS()
 class GUNSLINGER_API APlayerCharacter : public ACharacter
@@ -29,7 +28,6 @@ public:
 	APlayerCharacter();
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-	FORCEINLINE UCharacterTrajectoryComponent* GetCharacterTrajectoryComponent() const { return CharacterTrajectoryComponent; }
 protected:
 	//==============================================================
 	//=                          Variable                          =
@@ -42,9 +40,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Property | Component", meta = (AllowPrivateAccess = "true"))
 	UMotionWarpingComponent* MotionWarpingComponent;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Property | Component", meta = (AllowPrivateAccess = "true"))
-	UCharacterTrajectoryComponent* CharacterTrajectoryComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = "Property | Component", meta = (AllowPrivateAccess = "true"))
 	APlayerCharacterController* OwningController;

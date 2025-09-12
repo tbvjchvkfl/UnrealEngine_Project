@@ -8,7 +8,6 @@
 #include "BoneControllers/AnimNode_FootPlacement.h"
 #include "PlayerCharacterAnimInstance.generated.h"
 
-//struct FPoseSearchQueryTrajectory;
 class APlayerCharacter;
 class APlayerCharacterController;
 class UCharacterMovementComponent;
@@ -72,11 +71,20 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | State", meta = (AllowPrivateAccess = "true"))
 	bool bIsPivot;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Property | State", meta = (AllowPrivateAccess = "true"))
+	bool bIsSpin;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | State", meta = (AllowPrivateAccess = "true"))
 	float Speed;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | State", meta = (AllowPrivateAccess = "true"))
 	FVector CurrentVelocity;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | State", meta = (AllowPrivateAccess = "true"))
+	FVector LastNonZeroVelocity;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Property | Motion Matching", meta = (AllowPrivateAccess = "true"))
+	TArray<FName> StateDataBaseTagsArray;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Property | Tajectory", meta = (AllowPrivateAccess = "true"))
 	float DesiredYawLastUpdate;

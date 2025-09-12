@@ -15,6 +15,9 @@
 
 UPlayerCharacterAnimInstance::UPlayerCharacterAnimInstance()
 {
+	CurrentState = EPlayerState::IDLE;
+	StateDataBaseTagsArray.Empty();
+
 	// Init Foot Placement Setting
 	InitializeFootPlacement();
 }
@@ -22,7 +25,6 @@ UPlayerCharacterAnimInstance::UPlayerCharacterAnimInstance()
 void UPlayerCharacterAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-	CurrentState = EPlayerState::IDLE;
 	
 }
 
@@ -61,8 +63,9 @@ void UPlayerCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		CurrentVelocity = OwnerCharacterMovement->Velocity;
 		Speed = CurrentVelocity.Size2D();
 
-		bIsStartMovement = TrajectoryFutureVelocity.Size() >= CurrentVelocity.Size() + 100.0f;
+		bIsStartMovement = (TrajectoryFutureVelocity.Size() >= CurrentVelocity.Size() + 100.0f) && !StateDataBaseTagsArray.Contains("Run Pivot");
 		bIsPivot = FMath::Abs(UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::MakeRotFromX(TrajectoryFutureVelocity), UKismetMathLibrary::MakeRotFromX(CurrentVelocity)).Yaw) > 30.0f;
+		LastNonZeroVelocity = Speed > 5.0f ? CurrentVelocity : LastNonZeroVelocity;
 
 		SetCurrentState();
 	}
