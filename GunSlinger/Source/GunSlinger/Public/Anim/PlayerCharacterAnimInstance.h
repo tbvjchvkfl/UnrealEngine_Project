@@ -123,4 +123,10 @@ private:
 
 	UFUNCTION(BlueprintCallable, Category = "Function | Foot Placement")
 	FFootPlacementInterpolationSettings GetInterpolationSetting() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Function | Chooser Transition", meta = (BlueprintThreadSafe))
+	bool IsMovementStart() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Function | Chooser Transition", meta = (BlueprintThreadSafe))
+	bool IsPivot() const;
 };
