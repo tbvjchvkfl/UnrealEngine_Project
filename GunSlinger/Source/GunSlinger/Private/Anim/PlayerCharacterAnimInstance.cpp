@@ -62,11 +62,7 @@ void UPlayerCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		//bIsAcceleration = (OwnerCharacterMovement->GetCurrentAcceleration().Size() / OwnerCharacterMovement->GetMaxAcceleration()) > 0.0f;
 		CurrentVelocity = OwnerCharacterMovement->Velocity;
 		Speed = CurrentVelocity.Size2D();
-
-		bIsStartMovement = (TrajectoryFutureVelocity.Size() >= CurrentVelocity.Size() + 100.0f) && !StateDataBaseTagsArray.Contains("Run Pivot");
-		bIsPivot = FMath::Abs(UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::MakeRotFromX(TrajectoryFutureVelocity), UKismetMathLibrary::MakeRotFromX(CurrentVelocity)).Yaw) > 30.0f;
 		LastNonZeroVelocity = Speed > 5.0f ? CurrentVelocity : LastNonZeroVelocity;
-
 		SetCurrentState();
 	}
 }
@@ -76,17 +72,18 @@ void UPlayerCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 	Super::NativeThreadSafeUpdateAnimation(DeltaSeconds);
 
 	// IK, AimOffset
-	if (OwnerCharacter)
-	{
-		// 모션 매칭을 위한 궤적 계산 및 생성
-		FPoseSearchTrajectoryData TrajectoryData;
-		TrajectoryData.RotateTowardsMovementSpeed = 0.0f;
-		TrajectoryData.MaxControllerYawRate = 0.0f;
-		UPoseSearchTrajectoryLibrary::PoseSearchGenerateTrajectory(this, TrajectoryData, DeltaSeconds, CurrentTrajectory, DesiredYawLastUpdate, CurrentTrajectory, -1.0f, 30, 0.1f, 15);
 
-		// RunStart에서 RunLoop로 넘어가기 위한 전환 조건
-		UPoseSearchTrajectoryLibrary::GetTrajectoryVelocity(CurrentTrajectory, 0.4f, 0.5f, TrajectoryFutureVelocity, false);
-	}
+	// 모션 매칭을 위한 궤적 계산 및 생성
+	FPoseSearchTrajectoryData TrajectoryData;
+	TrajectoryData.RotateTowardsMovementSpeed = 0.0f;
+	TrajectoryData.MaxControllerYawRate = 0.0f;
+	UPoseSearchTrajectoryLibrary::PoseSearchGenerateTrajectory(this, TrajectoryData, DeltaSeconds, CurrentTrajectory, DesiredYawLastUpdate, CurrentTrajectory, -1.0f, 30, 0.1f, 15);
+
+	// RunStart에서 RunLoop로 넘어가기 위한 전환 조건
+	UPoseSearchTrajectoryLibrary::GetTrajectoryVelocity(CurrentTrajectory, 0.4f, 0.5f, TrajectoryFutureVelocity, false);
+
+	//bIsStartMovement = (TrajectoryFutureVelocity.Size() >= CurrentVelocity.Size() + 100.0f) && !StateDataBaseTagsArray.Contains("Run Pivot");
+	//bIsPivot = FMath::Abs(UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::MakeRotFromX(TrajectoryFutureVelocity), UKismetMathLibrary::MakeRotFromX(CurrentVelocity)).Yaw) > 30.0f;
 }
 
 void UPlayerCharacterAnimInstance::NativePostEvaluateAnimation()
@@ -127,6 +124,16 @@ FFootPlacementInterpolationSettings UPlayerCharacterAnimInstance::GetInterpolati
 		return InterpolationSettingsStop;
 	}
 	return InterpolationSettingsMoving;
+}
+
+bool UPlayerCharacterAnimInstance::IsMovementStart() const
+{
+	return (TrajectoryFutureVelocity.Size() >= CurrentVelocity.Size() + 100.0f) && !StateDataBaseTagsArray.Contains("Run Pivot");
+}
+
+bool UPlayerCharacterAnimInstance::IsPivot() const
+{
+	return FMath::Abs(UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::MakeRotFromX(TrajectoryFutureVelocity), UKismetMathLibrary::MakeRotFromX(CurrentVelocity)).Yaw) > 30.0f;
 }
 
 void UPlayerCharacterAnimInstance::SetCurrentState()
